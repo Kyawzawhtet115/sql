@@ -1,0 +1,482 @@
+> select * from player where team_id=1;
++------+-------------------+---------+------+--------+---------+--------+
+| id   | name              | jersyno | age  | salary | team_id | height |
++------+-------------------+---------+------+--------+---------+--------+
+|    1 | Lionel Messi      |      10 |   33 | 200000 |       1 |      5 |
+|    2 | Luis Suarez       |       9 |   33 | 650000 |       1 |      6 |
+|    3 | Antoine Grizemann |      17 |   29 | 550000 |       1 |      6 |
++------+-------------------+---------+------+--------+---------+--------+
+3 rows in set (0.00 sec)
+
+mysql> select * from player where salary=500000;
+Empty set (0.00 sec)
+
+mysql> select * from player where salary<500000;
++------+-----------------+---------+------+--------+---------+--------+
+| id   | name            | jersyno | age  | salary | team_id | height |
++------+-----------------+---------+------+--------+---------+--------+
+|    1 | Lionel Messi    |      10 |   33 | 200000 |       1 |      5 |
+|    4 | Sergio Ramos    |       4 |   34 | 450000 |       2 |      6 |
+|    7 | Virgil van Dijk |       4 |   29 | 450000 |       3 |      6 |
++------+-----------------+---------+------+--------+---------+--------+
+3 rows in set (0.00 sec)
+
+mysql> select * from player where salary>500000;
++------+-------------------+---------+------+--------+---------+--------+
+| id   | name              | jersyno | age  | salary | team_id | height |
++------+-------------------+---------+------+--------+---------+--------+
+|    2 | Luis Suarez       |       9 |   33 | 650000 |       1 |      6 |
+|    3 | Antoine Grizemann |      17 |   29 | 550000 |       1 |      6 |
+|    5 | Eden Hazard       |       7 |   28 | 750000 |       2 |      5 |
+|    6 | Luka Modric       |      10 |   33 | 650000 |       2 |      6 |
+|    8 | Sadio Mane        |      10 |   28 | 650000 |       3 |      5 |
+|    9 | Mohamed Salah     |      11 |   28 | 750000 |       3 |      6 |
++------+-------------------+---------+------+--------+---------+--------+
+6 rows in set (0.00 sec)
+
+mysql> select * ,(select SUM(salary) from player where  player_id=team_id)as salary from team;
+ERROR 1054 (42S22): Unknown column 'player_id' in 'where clause'
+mysql> select * ,(select SUM(salary) from player where  player team_id=team_id)as salary from team;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'team_id=team_id)as salary from team' at line 1
+mysql> select * ,(select SUM(salary) from player where  player.team_id=team_id)as salary from team;
++----+--------------+-------------+---------+
+| id | name         | foundeddate | salary  |
++----+--------------+-------------+---------+
+|  1 | FC Barcelona | 1899-11-29  | 5100000 |
+|  2 | Real Madrid  | 1902-03-06  | 5100000 |
+|  3 | Liverpool    | 1982-06-03  | 5100000 |
++----+--------------+-------------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select * from player where height > 5;
++------+-------------------+---------+------+--------+---------+--------+
+| id   | name              | jersyno | age  | salary | team_id | height |
++------+-------------------+---------+------+--------+---------+--------+
+|    2 | Luis Suarez       |       9 |   33 | 650000 |       1 |      6 |
+|    3 | Antoine Grizemann |      17 |   29 | 550000 |       1 |      6 |
+|    4 | Sergio Ramos      |       4 |   34 | 450000 |       2 |      6 |
+|    6 | Luka Modric       |      10 |   33 | 650000 |       2 |      6 |
+|    7 | Virgil van Dijk   |       4 |   29 | 450000 |       3 |      6 |
+|    9 | Mohamed Salah     |      11 |   28 | 750000 |       3 |      6 |
++------+-------------------+---------+------+--------+---------+--------+
+6 rows in set (0.00 sec)
+
+mysql> select * from player where height < 6;
++------+--------------+---------+------+--------+---------+--------+
+| id   | name         | jersyno | age  | salary | team_id | height |
++------+--------------+---------+------+--------+---------+--------+
+|    1 | Lionel Messi |      10 |   33 | 200000 |       1 |      5 |
+|    5 | Eden Hazard  |       7 |   28 | 750000 |       2 |      5 |
+|    8 | Sadio Mane   |      10 |   28 | 650000 |       3 |      5 |
++------+--------------+---------+------+--------+---------+--------+
+3 rows in set (0.00 sec)
+
+mysql> select average(salar) from player where team_id=2;
+ERROR 1305 (42000): FUNCTION kzh.average does not exist
+mysql> select average(salary) from player where team_id=2;
+ERROR 1305 (42000): FUNCTION kzh.average does not exist
+mysql> select avg(salary) from player where team_id=2;
++-------------+
+| avg(salary) |
++-------------+
+| 616666.6667 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select name,min(salary) from player;
++--------------+-------------+
+| name         | min(salary) |
++--------------+-------------+
+| Lionel Messi |      200000 |
++--------------+-------------+
+1 row in set (0.00 sec)
+
+mysql> select * from player where age>0 && salary>5000000;
+Empty set, 1 warning (0.00 sec)
+
+mysql> select * from player where age>30 && salary>5000000;
+Empty set, 1 warning (0.00 sec)
+
+mysql> select * from player where age>30 && salary>500000;
++------+-------------+---------+------+--------+---------+--------+
+| id   | name        | jersyno | age  | salary | team_id | height |
++------+-------------+---------+------+--------+---------+--------+
+|    2 | Luis Suarez |       9 |   33 | 650000 |       1 |      6 |
+|    6 | Luka Modric |      10 |   33 | 650000 |       2 |      6 |
++------+-------------+---------+------+--------+---------+--------+
+2 rows in set, 1 warning (0.00 sec)
+
+mysql> select * from player where age>30 ;
++------+--------------+---------+------+--------+---------+--------+
+| id   | name         | jersyno | age  | salary | team_id | height |
++------+--------------+---------+------+--------+---------+--------+
+|    1 | Lionel Messi |      10 |   33 | 200000 |       1 |      5 |
+|    2 | Luis Suarez  |       9 |   33 | 650000 |       1 |      6 |
+|    4 | Sergio Ramos |       4 |   34 | 450000 |       2 |      6 |
+|    6 | Luka Modric  |      10 |   33 | 650000 |       2 |      6 |
++------+--------------+---------+------+--------+---------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select * min(salary) from player;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'min(salary) from player' at line 1
+mysql> select * from player where age>30 or salary>500000;
++------+-------------------+---------+------+--------+---------+--------+
+| id   | name              | jersyno | age  | salary | team_id | height |
++------+-------------------+---------+------+--------+---------+--------+
+|    1 | Lionel Messi      |      10 |   33 | 200000 |       1 |      5 |
+|    2 | Luis Suarez       |       9 |   33 | 650000 |       1 |      6 |
+|    3 | Antoine Grizemann |      17 |   29 | 550000 |       1 |      6 |
+|    4 | Sergio Ramos      |       4 |   34 | 450000 |       2 |      6 |
+|    5 | Eden Hazard       |       7 |   28 | 750000 |       2 |      5 |
+|    6 | Luka Modric       |      10 |   33 | 650000 |       2 |      6 |
+|    8 | Sadio Mane        |      10 |   28 | 650000 |       3 |      5 |
+|    9 | Mohamed Salah     |      11 |   28 | 750000 |       3 |      6 |
++------+-------------------+---------+------+--------+---------+--------+
+8 rows in set (0.00 sec)
+
+mysql> select distinct salary from player order by salary;
++--------+
+| salary |
++--------+
+| 200000 |
+| 450000 |
+| 550000 |
+| 650000 |
+| 750000 |
++--------+
+5 rows in set (0.00 sec)
+
+mysql> select * from player order by name,salary;
++------+-------------------+---------+------+--------+---------+--------+
+| id   | name              | jersyno | age  | salary | team_id | height |
++------+-------------------+---------+------+--------+---------+--------+
+|    3 | Antoine Grizemann |      17 |   29 | 550000 |       1 |      6 |
+|    5 | Eden Hazard       |       7 |   28 | 750000 |       2 |      5 |
+|    1 | Lionel Messi      |      10 |   33 | 200000 |       1 |      5 |
+|    2 | Luis Suarez       |       9 |   33 | 650000 |       1 |      6 |
+|    6 | Luka Modric       |      10 |   33 | 650000 |       2 |      6 |
+|    9 | Mohamed Salah     |      11 |   28 | 750000 |       3 |      6 |
+|    8 | Sadio Mane        |      10 |   28 | 650000 |       3 |      5 |
+|    4 | Sergio Ramos      |       4 |   34 | 450000 |       2 |      6 |
+|    7 | Virgil van Dijk   |       4 |   29 | 450000 |       3 |      6 |
++------+-------------------+---------+------+--------+---------+--------+
+9 rows in set (0.00 sec)
+
+mysql> select * from player order by salary;
++------+-------------------+---------+------+--------+---------+--------+
+| id   | name              | jersyno | age  | salary | team_id | height |
++------+-------------------+---------+------+--------+---------+--------+
+|    1 | Lionel Messi      |      10 |   33 | 200000 |       1 |      5 |
+|    4 | Sergio Ramos      |       4 |   34 | 450000 |       2 |      6 |
+|    7 | Virgil van Dijk   |       4 |   29 | 450000 |       3 |      6 |
+|    3 | Antoine Grizemann |      17 |   29 | 550000 |       1 |      6 |
+|    2 | Luis Suarez       |       9 |   33 | 650000 |       1 |      6 |
+|    6 | Luka Modric       |      10 |   33 | 650000 |       2 |      6 |
+|    8 | Sadio Mane        |      10 |   28 | 650000 |       3 |      5 |
+|    5 | Eden Hazard       |       7 |   28 | 750000 |       2 |      5 |
+|    9 | Mohamed Salah     |      11 |   28 | 750000 |       3 |      6 |
++------+-------------------+---------+------+--------+---------+--------+
+9 rows in set (0.00 sec)
+
+mysql> insert into player values(10,'Ausu Fati',31,17,150000,1,4);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from player;
++------+-------------------+---------+------+--------+---------+--------+
+| id   | name              | jersyno | age  | salary | team_id | height |
++------+-------------------+---------+------+--------+---------+--------+
+|    1 | Lionel Messi      |      10 |   33 | 200000 |       1 |      5 |
+|    2 | Luis Suarez       |       9 |   33 | 650000 |       1 |      6 |
+|    3 | Antoine Grizemann |      17 |   29 | 550000 |       1 |      6 |
+|    4 | Sergio Ramos      |       4 |   34 | 450000 |       2 |      6 |
+|    5 | Eden Hazard       |       7 |   28 | 750000 |       2 |      5 |
+|    6 | Luka Modric       |      10 |   33 | 650000 |       2 |      6 |
+|    8 | Sadio Mane        |      10 |   28 | 650000 |       3 |      5 |
+|    7 | Virgil van Dijk   |       4 |   29 | 450000 |       3 |      6 |
+|    9 | Mohamed Salah     |      11 |   28 | 750000 |       3 |      6 |
+|   10 | Ausu Fati         |      31 |   17 | 150000 |       1 |      4 |
++------+-------------------+---------+------+--------+---------+--------+
+10 rows in set (0.00 sec)
+
+mysql> update player set salary=salary*0.5 where age in(select age from player where age>29);
+ERROR 1093 (HY000): You can't specify target table 'player' for update in FROM clause
+mysql> update player set salary=salary*0.5 where age in(select age from player where age>29);
+ERROR 1093 (HY000): You can't specify target table 'player' for update in FROM clause
+mysql> update player set salary=salary*0.5 where age>27 from player;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'from player' at line 1
+mysql> delete from player where id=2;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from player;
++------+-------------------+---------+------+--------+---------+--------+
+| id   | name              | jersyno | age  | salary | team_id | height |
++------+-------------------+---------+------+--------+---------+--------+
+|    1 | Lionel Messi      |      10 |   33 | 200000 |       1 |      5 |
+|    3 | Antoine Grizemann |      17 |   29 | 550000 |       1 |      6 |
+|    4 | Sergio Ramos      |       4 |   34 | 450000 |       2 |      6 |
+|    5 | Eden Hazard       |       7 |   28 | 750000 |       2 |      5 |
+|    6 | Luka Modric       |      10 |   33 | 650000 |       2 |      6 |
+|    8 | Sadio Mane        |      10 |   28 | 650000 |       3 |      5 |
+|    7 | Virgil van Dijk   |       4 |   29 | 450000 |       3 |      6 |
+|    9 | Mohamed Salah     |      11 |   28 | 750000 |       3 |      6 |
+|   10 | Ausu Fati         |      31 |   17 | 150000 |       1 |      4 |
++------+-------------------+---------+------+--------+---------+--------+
+9 rows in set (0.00 sec)
+
+mysql> update player set salary=800000 where player_id=1;
+ERROR 1054 (42S22): Unknown column 'player_id' in 'where clause'
+mysql> update player set salary=800000,height=4 where player_id=1;
+ERROR 1054 (42S22): Unknown column 'player_id' in 'where clause'
+mysql> update player set salary=800000 where name='Lionel Messi';
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from player;
++------+-------------------+---------+------+--------+---------+--------+
+| id   | name              | jersyno | age  | salary | team_id | height |
++------+-------------------+---------+------+--------+---------+--------+
+|    1 | Lionel Messi      |      10 |   33 | 800000 |       1 |      5 |
+|    3 | Antoine Grizemann |      17 |   29 | 550000 |       1 |      6 |
+|    4 | Sergio Ramos      |       4 |   34 | 450000 |       2 |      6 |
+|    5 | Eden Hazard       |       7 |   28 | 750000 |       2 |      5 |
+|    6 | Luka Modric       |      10 |   33 | 650000 |       2 |      6 |
+|    8 | Sadio Mane        |      10 |   28 | 650000 |       3 |      5 |
+|    7 | Virgil van Dijk   |       4 |   29 | 450000 |       3 |      6 |
+|    9 | Mohamed Salah     |      11 |   28 | 750000 |       3 |      6 |
+|   10 | Ausu Fati         |      31 |   17 | 150000 |       1 |      4 |
++------+-------------------+---------+------+--------+---------+--------+
+9 rows in set (0.00 sec)
+
+mysql> update player set salary=800000 where id=1;
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 1  Changed: 0  Warnings: 0
+
+mysql> select * from player;
++------+-------------------+---------+------+--------+---------+--------+
+| id   | name              | jersyno | age  | salary | team_id | height |
++------+-------------------+---------+------+--------+---------+--------+
+|    1 | Lionel Messi      |      10 |   33 | 800000 |       1 |      5 |
+|    3 | Antoine Grizemann |      17 |   29 | 550000 |       1 |      6 |
+|    4 | Sergio Ramos      |       4 |   34 | 450000 |       2 |      6 |
+|    5 | Eden Hazard       |       7 |   28 | 750000 |       2 |      5 |
+|    6 | Luka Modric       |      10 |   33 | 650000 |       2 |      6 |
+|    8 | Sadio Mane        |      10 |   28 | 650000 |       3 |      5 |
+|    7 | Virgil van Dijk   |       4 |   29 | 450000 |       3 |      6 |
+|    9 | Mohamed Salah     |      11 |   28 | 750000 |       3 |      6 |
+|   10 | Ausu Fati         |      31 |   17 | 150000 |       1 |      4 |
++------+-------------------+---------+------+--------+---------+--------+
+9 rows in set (0.00 sec)
+
+mysql> select count (Sadio Mane
+    -> select count (age) from player;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'select count (age) from player' at line 2
+mysql> select count (player) from player;
+ERROR 1630 (42000): FUNCTION kzh.count does not exist. Check the 'Function Name Parsing and Resolution' section in the Reference Manual
+mysql> select avg(salary) from player;
++-------------+
+| avg(salary) |
++-------------+
+| 577777.7778 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select distinct salary from player order by id;
++--------+
+| salary |
++--------+
+| 800000 |
+| 550000 |
+| 450000 |
+| 750000 |
+| 650000 |
+| 150000 |
++--------+
+6 rows in set (0.00 sec)
+
+mysql> select name from player group by player;
+ERROR 1054 (42S22): Unknown column 'player' in 'group statement'
+mysql> select name from player group by name;
++-------------------+
+| name              |
++-------------------+
+| Lionel Messi      |
+| Antoine Grizemann |
+| Sergio Ramos      |
+| Eden Hazard       |
+| Luka Modric       |
+| Sadio Mane        |
+| Virgil van Dijk   |
+| Mohamed Salah     |
+| Ausu Fati         |
++-------------------+
+9 rows in set (0.00 sec)
+
+mysql> desc team,player;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ',player' at line 1
+mysql> desc team;desc player;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| id          | int         | NO   | PRI | NULL    |       |
+| name        | varchar(30) | YES  |     | NULL    |       |
+| foundeddate | date        | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
++---------+---------------+------+-----+---------+-------+
+| Field   | Type          | Null | Key | Default | Extra |
++---------+---------------+------+-----+---------+-------+
+| id      | int           | YES  |     | NULL    |       |
+| name    | varchar(20)   | YES  |     | NULL    |       |
+| jersyno | int           | YES  |     | NULL    |       |
+| age     | int           | YES  |     | NULL    |       |
+| salary  | decimal(10,0) | YES  |     | NULL    |       |
+| team_id | int           | YES  |     | NULL    |       |
+| height  | int           | YES  |     | NULL    |       |
++---------+---------------+------+-----+---------+-------+
+7 rows in set (0.00 sec)
+
+mysql> select team.name,player.name from player,team where team.id=player.team_id;
++--------------+-------------------+
+| name         | name              |
++--------------+-------------------+
+| FC Barcelona | Lionel Messi      |
+| FC Barcelona | Antoine Grizemann |
+| Real Madrid  | Sergio Ramos      |
+| Real Madrid  | Eden Hazard       |
+| Real Madrid  | Luka Modric       |
+| Liverpool    | Sadio Mane        |
+| Liverpool    | Virgil van Dijk   |
+| Liverpool    | Mohamed Salah     |
+| FC Barcelona | Ausu Fati         |
++--------------+-------------------+
+9 rows in set (0.01 sec)
+
+mysql> select team.name,sum(player.salary) from team,player where team.id=player.team_id group by team.name;
++--------------+--------------------+
+| name         | sum(player.salary) |
++--------------+--------------------+
+| FC Barcelona |            1500000 |
+| Real Madrid  |            1850000 |
+| Liverpool    |            1850000 |
++--------------+--------------------+
+3 rows in set (0.00 sec)
+
+mysql> select player.name,sum(player.salary) from team,player where team.id=player.team_id group by player.name;
++-------------------+--------------------+
+| name              | sum(player.salary) |
++-------------------+--------------------+
+| Lionel Messi      |             800000 |
+| Antoine Grizemann |             550000 |
+| Sergio Ramos      |             450000 |
+| Eden Hazard       |             750000 |
+| Luka Modric       |             650000 |
+| Sadio Mane        |             650000 |
+| Virgil van Dijk   |             450000 |
+| Mohamed Salah     |             750000 |
+| Ausu Fati         |             150000 |
++-------------------+--------------------+
+9 rows in set (0.00 sec)
+
+mysql> select player.name,team.name from player,team where player.team_id=team.id;
++-------------------+--------------+
+| name              | name         |
++-------------------+--------------+
+| Lionel Messi      | FC Barcelona |
+| Antoine Grizemann | FC Barcelona |
+| Sergio Ramos      | Real Madrid  |
+| Eden Hazard       | Real Madrid  |
+| Luka Modric       | Real Madrid  |
+| Sadio Mane        | Liverpool    |
+| Virgil van Dijk   | Liverpool    |
+| Mohamed Salah     | Liverpool    |
+| Ausu Fati         | FC Barcelona |
++-------------------+--------------+
+9 rows in set (0.00 sec)
+
+mysql> select * from player where player.name like 'l%';
++------+--------------+---------+------+--------+---------+--------+
+| id   | name         | jersyno | age  | salary | team_id | height |
++------+--------------+---------+------+--------+---------+--------+
+|    1 | Lionel Messi |      10 |   33 | 800000 |       1 |      5 |
+|    6 | Luka Modric  |      10 |   33 | 650000 |       2 |      6 |
++------+--------------+---------+------+--------+---------+--------+
+2 rows in set (0.00 sec)
+
+mysql> select * from player where player.name like 'l_%';
++------+--------------+---------+------+--------+---------+--------+
+| id   | name         | jersyno | age  | salary | team_id | height |
++------+--------------+---------+------+--------+---------+--------+
+|    1 | Lionel Messi |      10 |   33 | 800000 |       1 |      5 |
+|    6 | Luka Modric  |      10 |   33 | 650000 |       2 |      6 |
++------+--------------+---------+------+--------+---------+--------+
+2 rows in set (0.00 sec)
+
+mysql> select * from player where player.name like 'l%' and 'a';
+Empty set, 1 warning (0.00 sec)
+
+mysql> select * from player where player.name like 'l%' and 'a%';
+Empty set, 1 warning (0.00 sec)
+
+mysql> select * from player where player.name like  'a%';
++------+-------------------+---------+------+--------+---------+--------+
+| id   | name              | jersyno | age  | salary | team_id | height |
++------+-------------------+---------+------+--------+---------+--------+
+|    3 | Antoine Grizemann |      17 |   29 | 550000 |       1 |      6 |
+|   10 | Ausu Fati         |      31 |   17 | 150000 |       1 |      4 |
++------+-------------------+---------+------+--------+---------+--------+
+2 rows in set (0.00 sec)
+
+mysql> select * from player where player.name like  '%a';
+Empty set (0.00 sec)
+
+mysql> select * from player where player.name like  '%n';
++------+-------------------+---------+------+--------+---------+--------+
+| id   | name              | jersyno | age  | salary | team_id | height |
++------+-------------------+---------+------+--------+---------+--------+
+|    3 | Antoine Grizemann |      17 |   29 | 550000 |       1 |      6 |
++------+-------------------+---------+------+--------+---------+--------+
+1 row in set (0.00 sec)
+
+mysql> select * from player where player.name like  '%n%';
++------+-------------------+---------+------+--------+---------+--------+
+| id   | name              | jersyno | age  | salary | team_id | height |
++------+-------------------+---------+------+--------+---------+--------+
+|    1 | Lionel Messi      |      10 |   33 | 800000 |       1 |      5 |
+|    3 | Antoine Grizemann |      17 |   29 | 550000 |       1 |      6 |
+|    5 | Eden Hazard       |       7 |   28 | 750000 |       2 |      5 |
+|    8 | Sadio Mane        |      10 |   28 | 650000 |       3 |      5 |
+|    7 | Virgil van Dijk   |       4 |   29 | 450000 |       3 |      6 |
++------+-------------------+---------+------+--------+---------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select * from player where player.name like  'n%0';
+Empty set (0.00 sec)
+
+mysql> select * from player where player.name like 'a%d';
+Empty set (0.00 sec)
+
+mysql> select * from player where player.name like 'a%n';
++------+-------------------+---------+------+--------+---------+--------+
+| id   | name              | jersyno | age  | salary | team_id | height |
++------+-------------------+---------+------+--------+---------+--------+
+|    3 | Antoine Grizemann |      17 |   29 | 550000 |       1 |      6 |
++------+-------------------+---------+------+--------+---------+--------+
+1 row in set (0.00 sec)
+
+mysql> select * from player where id in(select id from player where salary>400000;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> select * from player where id in(select id from player where salary>400000);
++------+-------------------+---------+------+--------+---------+--------+
+| id   | name              | jersyno | age  | salary | team_id | height |
++------+-------------------+---------+------+--------+---------+--------+
+|    1 | Lionel Messi      |      10 |   33 | 800000 |       1 |      5 |
+|    3 | Antoine Grizemann |      17 |   29 | 550000 |       1 |      6 |
+|    4 | Sergio Ramos      |       4 |   34 | 450000 |       2 |      6 |
+|    5 | Eden Hazard       |       7 |   28 | 750000 |       2 |      5 |
+|    6 | Luka Modric       |      10 |   33 | 650000 |       2 |      6 |
+|    8 | Sadio Mane        |      10 |   28 | 650000 |       3 |      5 |
+|    7 | Virgil van Dijk   |       4 |   29 | 450000 |       3 |      6 |
+|    9 | Mohamed Salah     |      11 |   28 | 750000 |       3 |      6 |
++------+-------------------+---------+------+--------+---------+--------+
+8 rows in set (0.00 sec)
